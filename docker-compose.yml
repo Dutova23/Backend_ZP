@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: example
+      POSTGRES_PASSWORD: example
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  backend:
+    build: ./app/backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:12345@localhost:5432/Curs1
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+  nginx:
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./config:/etc/nginx
+
+volumes:
+  db-data:
